@@ -1,0 +1,2 @@
+Telefon: Realme C31 
+ADB device: 0A62414I29101934
