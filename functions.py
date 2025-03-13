@@ -230,6 +230,84 @@ def website_session_matanalata():
     except Exception as e:
         logger.error(f"Wystąpił błąd: {e}")
         return False
+    
+def visit_website_domodeo_ploty(url="www.domodeo24.pl/pl/menu/ploty-i-ogrodzenia-269"):
+    """
+    Otwiera przeglądarkę Chrome w trybie incognito i odwiedza podany adres URL.
+    """
+    try:
+        # Krok 1: Uruchomienie Chrome
+        subprocess.run([
+            "adb", "-s", DEVICE_ID, "shell", "am", "start",
+            "-n", "com.android.chrome/com.google.android.apps.chrome.Main",
+        ], check=True)
+        time.sleep(2)  # odczekaj, aż przeglądarka się załaduje
+
+        # Krok 2: Wywołanie menu (keyevent 82)
+        subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "keyevent", "82"], check=True)
+
+        # Krok 3: Symulacja kliknięcia w opcję "Nowa karta incognito"
+        subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", "450", "310"], check=True)
+
+        # Krok 4: Kliknięcie w pasek adresu 
+        subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", "308", "113"], check=True)
+
+        # Krok 5: Wpisanie URL
+        subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "text", url], check=True)
+
+        # Krok 6: Naciśnięcie Enter (keyevent 66)
+        subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "keyevent", "66"], check=True)
+        time.sleep(3)
+
+        # Krok 7: Zamknięcie komunikatu o cookie
+        subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", "134", "1410"], check=True)
+
+        # Krok 8: Wywołanie menu (keyevent 82)
+        subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "keyevent", "82"], check=True)
+
+        # Krok 9: Symulacja kliknięcia w opcję "Wersja na komputer"
+        subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", "508", "1030"], check=True)
+        time.sleep(3)
+
+        return True
+
+    except subprocess.CalledProcessError as error:
+        logger.error(f"Błąd podczas wykonywania komendy: {error}")
+        return False
+
+def website_session_domodeo_ploty():
+    """
+    Symuluje interakcję ze stroną internetową poprzez symulację kliknięć i przewijania
+    używając adb (Android Debug Bridge)
+    """
+    # Lista współrzędnych (x, y)
+    coordinates = [
+        (320, 685),
+        (580, 685),
+        (320, 990),
+        (580, 990),
+        (320, 1310),
+        (580, 1310)
+    ]
+    
+    try:
+        for i in range(5):
+            x, y = random.choice(coordinates)
+            # kliknij w produkt
+            subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", str(x), str(y)], check=True)
+            time.sleep(random.uniform(3,7))
+            # Scroluj w dol i do góry
+            subprocess.run(["adb", "shell", "input", "swipe", "500", "1500", "500", "400", "500"], check=True)
+            time.sleep(random.uniform(3,7))
+            subprocess.run(["adb", "shell", "input", "swipe", "500", "400", "500", "1500", "500"], check=True)
+  
+            # Wróć na strone
+            subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", "197", "304"], check=True)
+            time.sleep(random.uniform(2,4))
+        return True
+    except Exception as e:
+        logger.error(f"Wystąpił błąd: {e}")
+        return False 
 
 def close_all_incognito_tabs():
     """

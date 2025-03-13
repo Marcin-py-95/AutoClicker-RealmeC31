@@ -1,28 +1,3 @@
-# import subprocess
-# import time
-# import random
-# import functions as f
-# # -----------------------------TO DZIALA CALY CZAS - dopisz device_id------------------------------
-# iteration = 0
-# DEVICE_ID = "0A62414I29101934"
-# # while True:
-# iteration += 1
-# # Włączenie trybu samolotowego
-# subprocess.run(["adb", "-s", DEVICE_ID, "shell", "settings", "put", "global", "airplane_mode_on", "1"])
-# subprocess.run(["adb", "-s", DEVICE_ID, "shell", "am", "broadcast", "-a", "android.intent.action.AIRPLANE_MODE", "--ez", "state", "true"])
-# time.sleep(2)
-
-#     # otworz karte incognito - ruch na stronie - zamknij karte incognito
-#     # f.visit_website()
-#     # f.website_session()
-#     # f.close_all_incognito_tabs()
-
-# # Wyłączenie trybu samolotowego:
-# # subprocess.run(["adb", "-s", DEVICE_ID, "shell", "settings", "put", "global", "airplane_mode_on", "0"])
-# # subprocess.run(["adb", "-s", DEVICE_ID, "shell", "am", "broadcast", "-a", "android.intent.action.AIRPLANE_MODE", "--ez", "state", "false"])
-# # time.sleep(3)
-#     # print(f'\033[1;33m*** Zakończono pętlę nr {iteration}. Następna iteracja za chwilę. ***\033[0m')
-
 import subprocess
 import time
 import datetime
@@ -39,6 +14,7 @@ DEVICE_ID = "0A62414I29101934"
 DOMODEO_VISITS = 400
 RATANART_VISITS = 60
 MATANALATA_VISITS = 100
+DOMODEO_PLOTY_VISITS = 50
 DAILY_GROWTH = 0.05  # 5% wzrost dziennie
 
 def run_iteration(site):
@@ -62,6 +38,9 @@ def run_iteration(site):
     elif site == "matanalata":
         f.visit_website_matanalata()
         f.website_session_matanalata()
+    elif site == 'domodeo_ploty':
+        f.visit_website_domodeo_ploty()
+        f.website_session_domodeo_ploty()
         
     f.close_all_incognito_tabs()
     
@@ -76,12 +55,13 @@ def run_continuous_mode():
     domodeo_count = 0
     ratanart_count = 0
     matanalata_count = 0
+    domodeo_ploty_count = 0
     
     logger.info("Tryb ciągły: działanie od 7:00 do 18:00")
-    logger.info(f"Cele na dziś: domodeo={DOMODEO_VISITS}, ratanart={RATANART_VISITS}, matanalata={MATANALATA_VISITS}")
+    logger.info(f"Cele na dziś: domodeo={DOMODEO_VISITS}, ratanart={RATANART_VISITS}, matanalata={MATANALATA_VISITS}, domodeo_ploty={DOMODEO_PLOTY_VISITS}")
     
     # Całkowita liczba wejść
-    total_visits = DOMODEO_VISITS + RATANART_VISITS + MATANALATA_VISITS
+    total_visits = DOMODEO_VISITS + RATANART_VISITS + MATANALATA_VISITS + DOMODEO_PLOTY_VISITS
     
     # Liczba sekund pracy (11 godzin)
     work_seconds = 11 * 3600
@@ -97,6 +77,8 @@ def run_continuous_mode():
         visit_schedule.append("ratanart")
     for _ in range(MATANALATA_VISITS):
         visit_schedule.append("matanalata")
+    for _ in range(DOMODEO_PLOTY_VISITS):
+        visit_schedule.append('domodeo_ploty')
     
     # Pomieszaj listę, aby wizyty były rozłożone w czasie
     random.shuffle(visit_schedule)
@@ -122,6 +104,9 @@ def run_continuous_mode():
         elif site == "matanalata":
             matanalata_count += 1
             logger.info(f"Matanalata: {matanalata_count}/{MATANALATA_VISITS}")
+        elif site == "domodeo_ploty":
+            domodeo_ploty_count += 1
+            logger.info(f"Domodeo_ploty: {domodeo_ploty_count}/{DOMODEO_PLOTY_VISITS}")
             
         # Czas oczekiwania z lekką wariancją (±20%)
         sleep_time = avg_time_between_visits * random.uniform(0.8, 1.2)
@@ -142,13 +127,14 @@ def sleep_until(target_time):
 
 def update_daily_targets():
     """Aktualizuje dzienne cele o 5%."""
-    global DOMODEO_VISITS, RATANART_VISITS, MATANALATA_VISITS
+    global DOMODEO_VISITS, RATANART_VISITS, MATANALATA_VISITS, DOMODEO_PLOTY_VISITS
     
     DOMODEO_VISITS = int(DOMODEO_VISITS * (1 + DAILY_GROWTH))
     RATANART_VISITS = int(RATANART_VISITS * (1 + DAILY_GROWTH))
     MATANALATA_VISITS = int(MATANALATA_VISITS * (1 + DAILY_GROWTH))
+    DOMODEO_PLOTY_VISITS = int(DOMODEO_PLOTY_VISITS * (1 + DAILY_GROWTH))
     
-    logger.info(f"Zaktualizowano dzienne cele: domodeo={DOMODEO_VISITS}, ratanart={RATANART_VISITS}, matanalata={MATANALATA_VISITS}")
+    logger.info(f"Zaktualizowano dzienne cele: domodeo={DOMODEO_VISITS}, ratanart={RATANART_VISITS}, matanalata={MATANALATA_VISITS}, domodeo_ploty={DOMODEO_PLOTY_VISITS}")
 
 if __name__ == '__main__':
     last_date = datetime.datetime.now().date()
