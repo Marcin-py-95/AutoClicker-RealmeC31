@@ -54,22 +54,22 @@ def website_session_domodeo():
         # Losowo wybieramy jedną z dwóch opcji kliknięcia
         if random.choice([True, False]):
             subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", str(x * 0.25), str(y * 0.75)], check=True)
-            time.sleep(random.uniform(2, 5))
+            time.sleep(random.uniform(5, 9))
         else:
             subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", str(x * 0.75), str(y * 0.75)], check=True)
-            time.sleep(random.uniform(2, 5))
+            time.sleep(random.uniform(5, 9))
 
         # Pętla symulująca przewijanie strony oraz dodatkowe kliknięcia
         for j in range(5):
             # Trzykrotne przewinięcie strony
             for i in range(3):
                 subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "swipe", "300", "800", "300", "250"], check=True)
-            time.sleep(random.uniform(2, 5))
+            time.sleep(random.uniform(5, 10))
 
             # Dwa kliknięcia w określonych współrzędnych
             for i in range(2):
                 subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", str(x * 0.5), str(y * (0.5 + i * 0.2))], check=True)
-            time.sleep(random.uniform(2, 5))
+            time.sleep(random.uniform(5, 10))
             
         return True
     except Exception as e:
@@ -130,18 +130,18 @@ def website_session_rattanart():
             for i in range(8):
             # Przewinięcie strony
                 subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "swipe", "300", "1200", "300", "250"], check=True)
-                time.sleep(random.uniform(1, 2))
+                time.sleep(random.uniform(4, 8))
 
             
             # Do góry strony    
             subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", "350", "1410"], check=True)
-            time.sleep(random.uniform(1, 2))
+            time.sleep(random.uniform(4, 8))
 
             # Produkty
             subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", "350", "962"], check=True)
-            time.sleep(random.uniform(3, 5))
+            time.sleep(random.uniform(4, 8))
             subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", "350", str(random_y)], check=True)
-            time.sleep(random.uniform(3, 5))
+            time.sleep(random.uniform(4, 8))
 
         return True
     except Exception as e:
@@ -216,15 +216,15 @@ def website_session_matanalata():
 
             # Klik w produkty główny
             subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", str(x1), str(y1)], check=True)
-            time.sleep(random.uniform(3, 5))
+            time.sleep(random.uniform(5, 9))
 
             # Klik w sub produkt
             subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", str(x2), str(y2)], check=True)
-            time.sleep(random.uniform(3, 5))
+            time.sleep(random.uniform(5, 9))
 
             #Strona główna
             subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", "350", "305"], check=True)
-            time.sleep(random.uniform(3, 5))
+            time.sleep(random.uniform(4, 5))
 
         return True
     except Exception as e:
@@ -295,15 +295,18 @@ def website_session_domodeo_ploty():
             x, y = random.choice(coordinates)
             # kliknij w produkt
             subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", str(x), str(y)], check=True)
-            time.sleep(random.uniform(3,7))
+            time.sleep(random.uniform(4,7))
+
             # Scroluj w dol i do góry
             subprocess.run(["adb", "shell", "input", "swipe", "500", "1500", "500", "400", "500"], check=True)
-            time.sleep(random.uniform(3,7))
+            time.sleep(random.uniform(5,9))
+
             subprocess.run(["adb", "shell", "input", "swipe", "500", "400", "500", "1500", "500"], check=True)
-  
+            time.sleep(random.uniform(3,5))
+
             # Wróć na strone
             subprocess.run(["adb", "-s", DEVICE_ID, "shell", "input", "tap", "197", "304"], check=True)
-            time.sleep(random.uniform(2,4))
+            time.sleep(random.uniform(3,6))
         return True
     except Exception as e:
         logger.error(f"Wystąpił błąd: {e}")
